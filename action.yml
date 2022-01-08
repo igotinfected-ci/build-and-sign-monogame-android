@@ -89,11 +89,11 @@ runs:
 
     - name: Upload built aab as artifact
       uses: actions/upload-artifact@v2
-        with:
-          name: signed-aab
-          path: ${{ inputs.project-path }}/bin/Release/*.aab
-          if-no-files-found: error
-          retention-days: 5
+      with:
+        name: signed-aab
+        path: ${{ inputs.project-path }}/bin/Release/*.aab
+        if-no-files-found: error
+        retention-days: 5
 
 branding:
   icon: 'key'
