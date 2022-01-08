@@ -85,14 +85,13 @@ runs:
           /p:AndroidSigningStorePass=${{ inputs.keystore-password }} `
           /p:AndroidSigningKeyAlias=${{ inputs.key-alias }} `
           /p:AndroidSigningKeyPass=${{ inputs.key-password }}
-          /p:OutputPath="${{ inputs.project-path }}\build"
       shell: pwsh
 
     - name: Upload built aab as artifact
       uses: actions/upload-artifact@v2
       with:
         name: signed-aab
-        path: ${{ inputs.project-path }}\build\*.aab
+        path: ${{ inputs.project-path }}\bin\AnyCPU\Release\*.aab
         if-no-files-found: error
         retention-days: 5
 
