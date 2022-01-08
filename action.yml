@@ -1,49 +1,49 @@
-name: 'Build and sign MonoGame Android project'
+name: "Build and sign MonoGame Android project"
 
-author: 'igotinfected (Jason Rebelo Neves)'
+author: "igotinfected (Jason Rebelo Neves)"
 
-description: 'Build and sign your MonoGame Android projects for release with this action.'
+description: "Build and sign your MonoGame Android projects for release with this action."
 
 inputs:
   dotnet-version:
-    description: '.NET version to set up `dotnet` with. Defaults to `3.1.x`.'
+    description: ".NET version to set up `dotnet` with. Defaults to `3.1.x`."
     required: false
-    default: '3.1.x'
+    default: "3.1.x"
   solution-path:
-    description: 'Path to the `.sln`. Used to restore NuGet packages from.'
+    description: "Path to the `.sln`. Used to restore NuGet packages from."
     required: true
   content-mgcb-path:
-    description: 'Path to the `Content.mgcb` file for the Android project. Used to build the MonoGame content files. Note: this may not be required in future releases.'
+    description: "Path to the `Content.mgcb` file for the Android project. Used to build the MonoGame content files. Note: this may not be required in future releases."
     required: true
   project-path:
-    description: 'Path to the Android project.'
+    description: "Path to the Android project."
     required: true
   csproj-path:
-    description: 'Path to the Android `.csproj` to build with. This is passed to `msbuild` to initiate the build.'
+    description: "Path to the Android `.csproj` to build with. This is passed to `msbuild` to initiate the build."
     required: true
   build-configuration:
-    description: 'The `msbuild` build configuration to use. Defaults to `Release`.'
+    description: "The `msbuild` build configuration to use. Defaults to `Release`."
     required: true
-    default: 'Release'
+    default: "Release"
   package-format:
-    description: 'The Android package format to use. Should be `aab` for Play Store distribution. Defaults to `aab`.'
+    description: "The Android package format to use. Should be `aab` for Play Store distribution. Defaults to `aab`."
     required: true
-    default: 'aab'
+    default: "aab"
   keystore:
-    description: 'Base64 encoded string of the keystore to use for signing. This value should be stored as a GitHub secret.'
+    description: "Base64 encoded string of the keystore to use for signing. This value should be stored as a GitHub secret."
     required: true
   keystore-password:
-    description: 'Password for the keystore. This value should be stored as a GitHub secret.'
+    description: "Password for the keystore. This value should be stored as a GitHub secret."
     required: true
   key-alias:
-    description: 'Alias of the key to use from the keystore.'
+    description: "Alias of the key to use from the keystore."
     required: true
   key-password:
-    description: 'Password for the key. This value should be stored as a GitHub secret.'
+    description: "Password for the key. This value should be stored as a GitHub secret."
     required: true
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Checkout branch
       uses: actions/checkout@v2.4.0
@@ -89,12 +89,12 @@ runs:
 
     - name: Upload built aab as artifact
       uses: actions/upload-artifact@v2
-        with:
-          name: signed-aab
-          path: ${{ inputs.project-path }}/bin/Release/*.aab
-          if-no-files-found: error
-          retention-days: 5
+      with:
+        name: signed-aab
+        path: ${{ inputs.project-path }}/bin/Release/*.aab
+        if-no-files-found: error
+        retention-days: 5
 
 branding:
-  icon: 'key'
-  color: 'red'
+  icon: "package"
+  color: "red"
