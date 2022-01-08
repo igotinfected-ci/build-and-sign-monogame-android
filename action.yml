@@ -83,7 +83,7 @@ runs:
           /p:AndroidKeyStore=true `
           /p:AndroidSigningKeyStore=keystore.jks `
           /p:AndroidSigningStorePass=${{ inputs.keystore-password }} `
-          /p:AndroidSigningKeyAlias=${{ inputs.keystore-alias }} `
+          /p:AndroidSigningKeyAlias=${{ inputs.key-alias }} `
           /p:AndroidSigningKeyPass=${{ inputs.key-password }}
       shell: pwsh
 
