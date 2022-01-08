@@ -1,4 +1,4 @@
-name: 'Build and Sign MonoGame Android project'
+name: 'Build and sign MonoGame Android project'
 
 author: 'igotinfected (Jason Rebelo Neves)'
 
@@ -16,6 +16,9 @@ inputs:
     description: 'Path to the `Content.mgcb` file for the Android project. Used to build the MonoGame content files. Note: this may not be required in future releases.'
     required: true
   project-path:
+    description: 'Path to the Android project.'
+    required: true
+  csproj-path:
     description: 'Path to the Android `.csproj` to build with. This is passed to `msbuild` to initiate the build.'
     required: true
   build-configuration:
@@ -42,55 +45,55 @@ inputs:
 runs:
   using: 'composite'
   steps:
-      - name: Checkout branch
-        uses: actions/checkout@v2.4.0
+    - name: Checkout branch
+      uses: actions/checkout@v2.4.0
 
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v1
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
+
+    - name: Setup msbuild
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Install MGCB
+      run: dotnet tool install -g dotnet-mgcb
+      shell: pwsh
+
+    - name: Install dependencies
+      run: nuget restore "${{ inputs.solution-path }}"
+      shell: pwsh
+
+    - name: Build resources
+      run: |
+        cd "${{ inputs.content-mgcb-path }}"
+        mgcb Content.mgcb /platform:Android
+      shell: pwsh
+
+    - name: Decode and generate keystore
+      run: (echo ${{ inputs.keystore }} | base64 -d) > "${{ inputs.project-path }}\keystore.jks"
+      shell: bash
+
+    - name: Build, package, and sign aab
+      run: |
+        msbuild "${{ inputs.csproj-path }}" \
+          /t:SignAndroidPackage \
+          /p:Configuration=${{ inputs.build-configuration }} \
+          /p:AndroidPackageFormat=${{ inputs.package-format }} \
+          /p:AndroidKeyStore=true \
+          /p:AndroidSigningKeyStore=keystore.jks \
+          /p:AndroidSigningStorePass=${{ inputs.keystore-password }} \
+          /p:AndroidSigningKeyAlias=${{ inputs.keystore-alias }} \
+          /p:AndroidSigningKeyPass=${{ inputs.key-password }}
+      shell: pwsh
+
+    - name: Upload built aab as artifact
+      uses: actions/upload-artifact@v2
         with:
-          dotnet-version: ${{ inputs.dotnet-version }}
-
-      - name: Setup msbuild
-        uses: microsoft/setup-msbuild@v1.1
-
-      - name: Install MGCB
-        run: dotnet tool install -g dotnet-mgcb
-        shell: pwsh
-
-      - name: Install dependencies
-        run: nuget restore "${{ inputs.solution-path }}"
-        shell: pwsh
-
-      - name: Build resources
-        run: |
-          cd "${{ inputs.content-mgcb-path }}"
-          mgcb Content.mgcb /platform:Android
-        shell: pwsh
-
-      - name: Decode and generate keystore
-        run: (echo ${{ inputs.keystore }} | base64 -d) > "${{ inputs.project-path }}\keystore.jks"
-        shell: bash
-
-      - name: Build, package, and sign aab
-        run: |
-          msbuild "${{ inputs.project-path }}" \
-            /t:SignAndroidPackage \
-            /p:Configuration=${{ inputs.build-configuration }} \
-            /p:AndroidPackageFormat=${{ inputs.package-format }} \
-            /p:AndroidKeyStore=true \
-            /p:AndroidSigningKeyStore=keystore.jks \
-            /p:AndroidSigningStorePass=${{ inputs.keystore-password }} \
-            /p:AndroidSigningKeyAlias=${{ inputs.keystore-alias }} \
-            /p:AndroidSigningKeyPass=${{ inputs.key-password }}
-        shell: pwsh
-
-      - name: Upload built aab as artifact
-        uses: actions/upload-artifact@v2
-          with:
-            name: signed-aab
-            path: ${{ inputs.project-path }}/bin/Release/*.aab
-            if-no-files-found: error
-            retention-days: 5
+          name: signed-aab
+          path: ${{ inputs.project-path }}/bin/Release/*.aab
+          if-no-files-found: error
+          retention-days: 5
 
 branding:
   icon: 'key'
