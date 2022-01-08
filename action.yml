@@ -76,14 +76,14 @@ runs:
 
     - name: Build, package, and sign aab
       run: |
-        msbuild "${{ inputs.csproj-path }}" \
-          /t:SignAndroidPackage \
-          /p:Configuration=${{ inputs.build-configuration }} \
-          /p:AndroidPackageFormat=${{ inputs.package-format }} \
-          /p:AndroidKeyStore=true \
-          /p:AndroidSigningKeyStore=keystore.jks \
-          /p:AndroidSigningStorePass=${{ inputs.keystore-password }} \
-          /p:AndroidSigningKeyAlias=${{ inputs.keystore-alias }} \
+        msbuild "${{ inputs.csproj-path }}" `
+          /t:SignAndroidPackage `
+          /p:Configuration=${{ inputs.build-configuration }} `
+          /p:AndroidPackageFormat=${{ inputs.package-format }} `
+          /p:AndroidKeyStore=true `
+          /p:AndroidSigningKeyStore=keystore.jks `
+          /p:AndroidSigningStorePass=${{ inputs.keystore-password }} `
+          /p:AndroidSigningKeyAlias=${{ inputs.keystore-alias }} `
           /p:AndroidSigningKeyPass=${{ inputs.key-password }}
       shell: pwsh
 
