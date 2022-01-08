@@ -71,7 +71,7 @@ runs:
       shell: pwsh
 
     - name: Decode and generate keystore
-      run: (echo ${{ inputs.keystore }} | base64 -d) > "${{ inputs.project-path }}\keystore.jks"
+      run: (echo "${{ inputs.keystore }}" | base64 -d) > "${{ inputs.project-path }}\keystore.jks"
       shell: bash
 
     - name: Build, package, and sign aab
