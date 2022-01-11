@@ -35,11 +35,14 @@ jobs:
         with:
           solution-path: '${{ github.workspace }}\Project\Project.sln'
           content-mgcb-path: '${{ github.workspace }}\Project\Android\Content'
-          content-mgcb-platform: "Android"
           project-path: '${{ github.workspace }}\Project\Android'
           csproj-path: '${{ github.workspace }}\Project\Android\Android.csproj'
-          build-target: "PackageForAndroid"
           build-configuration: "Release"
+          package-format: "aab"
+          keystore: ${{ secrets.KEYSTORE }}
+          keystore-password: ${{ secrets.KEYSTORE_PASSWORD }}
+          key-alias: ${{ secrets.KEY_ALIAS }}
+          key-password: ${{ secrets.KEY_PASSWORD }}
 ```
 
 This action uploads the generated `aab`s as artifacts (`name: signed-aab`) to the workflow, meaning
@@ -71,11 +74,14 @@ jobs:
         with:
           solution-path: '${{ github.workspace }}\Project\Project.sln'
           content-mgcb-path: '${{ github.workspace }}\Project\Android\Content'
-          content-mgcb-platform: "Android"
           project-path: '${{ github.workspace }}\Project\Android'
           csproj-path: '${{ github.workspace }}\Project\Android\Android.csproj'
-          build-target: "PackageForAndroid"
           build-configuration: "Release"
+          package-format: "aab"
+          keystore: ${{ secrets.KEYSTORE }}
+          keystore-password: ${{ secrets.KEYSTORE_PASSWORD }}
+          key-alias: ${{ secrets.KEY_ALIAS }}
+          key-password: ${{ secrets.KEY_PASSWORD }}
 
   do-something-with-it:
     runs-on: windows-latest
